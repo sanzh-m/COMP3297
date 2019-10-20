@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <!-- <script src="./index.js"></script> -->
+</head>
+<style>
+    td:hover {
+        cursor: move;
+    }
+</style>
+
+<body class="body">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Project Backlog</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Logo </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Sprint Backlog</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">View Done: Yes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Sprint Backlog History</a>
+                </li>
+            </ul>
+            <span class="navbar-text">
+                Username
+            </span>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table table-hover" id="myTable">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">PBI</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Cumulative</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="1" class="context">
+                            <td class="index">1</td>
+                            <!-- <td class="indexInput"><input type="text" name="abc" id="index" value="1"></td> -->
+                            <td>A job</td>
+                            <td>Needs to do something</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>In Progress</td>
+                        </tr>
+                        <tr id="2" class="context">
+                            <td class="index">2</td>
+                            <!-- <td class="indexInput"><input type="text" name="abc" id="index" value="2"></td> -->
+                            <td>A job</td>
+                            <td>Needs to do something</td>
+                            <td>2</td>
+                            <td>8</td>
+                            <td>To do</td>
+                        </tr>
+                        <tr id="3" class="context">
+                            <td class="index">3</td>
+                            <!-- <td class="indexInput"><input type="text" name="abc" id="index" value="3"></td> -->
+                            <td>A job</td>
+                            <td>Needs to do something</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>Done</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <div class="dropdown-menu dropdown-menu-sm" id="context-menu">
+                    <a class="dropdown-item" href="#">Move Up</a>
+                    <a class="dropdown-item" href="#">Move Down</a>
+                    <a class="dropdown-item" href="#">Delete</a>
+                    <a class="dropdown-item" href="#">Refine</a>
+                    <a class="dropdown-item" href="#">Modify</a>
+                    <a class="dropdown-item" href="#">Add to Sprint</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">PBI</label>
+                                <input type="email" class="form-control" id="exampleInputEmail1"
+                                    aria-describedby="emailHelp" placeholder="Enter email">
+                                <small id="emailHelp" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Title</label>
+                                <input class="form-control" id="exampleInputPassword1"
+                                    >
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Description</label>
+                                <input class="form-control" id="exampleInputPassword1"
+                                    >
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Size</label>
+                                <input class="form-control" id="exampleInputPassword1"
+                                    >
+                            </div>
+                            <div class="form-group">
+                                    <label for="exampleInputPassword1">Cumulative</label>
+                                    <input class="form-control" id="exampleInputPassword1"
+                                        >
+                            </div>
+                            <div class="form-group">
+                                    <label for="exampleInputPassword1">Statuss</label>
+                                    <input class="form-control" id="exampleInputPassword1">
+                                    
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal">Add</button>
+    </div>
+
+</body>
+<script>
+    var fixHelperModified = function (e, tr) {
+        var $originals = tr.children();
+        var $helper = tr.clone();
+        $helper.children().each(function (index) {
+            $(this).width($originals.eq(index).width())
+        });
+        return $helper;
+    },
+        updateIndex = function (e, ui) {
+            $('td.index', ui.item.parent()).each(function (i) {
+                $(this).html(i + 1);
+            });
+            $('input[type=text]', ui.item.parent()).each(function (i) {
+                $(this).val(i + 1);
+            });
+        };
+
+    $("#myTable tbody").sortable({
+        helper: fixHelperModified,
+        stop: updateIndex
+    }).disableSelection();
+
+    $("tbody").sortable({
+        distance: 5,
+        delay: 100,
+        opacity: 0.6,
+        cursor: 'move',
+        update: function () { }
+    });
+    $('.context').on('contextmenu', function (e) {
+        var top = e.pageY - 50;
+        var left = e.pageX - 120;
+        $("#context-menu").css({
+            display: "block",
+            top: top,
+            left: left
+        }).addClass("show");
+        return false; //blocks default Webbrowser right click menu
+    }).on("click", function () {
+        $("#context-menu").removeClass("show").hide();
+    });
+
+    $("#context-menu a").on("click", function () {
+        $(this).parent().removeClass("show").hide();
+    });
+    $("html").on("click", function () {
+        console.log('in')
+        $("#context-menu").removeClass("show").hide();
+    });
+</script>
+
+</html>
