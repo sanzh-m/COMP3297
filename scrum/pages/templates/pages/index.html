@@ -43,7 +43,7 @@
                     <a class="nav-link" href="#">Sprint Backlog</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">View Done: Yes</a>
+                    <a class="nav-link" href="#">View Done: No(WILL BE IMPLEMENTED in the future)</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Sprint Backlog History</a>
@@ -68,14 +68,14 @@
                             <th scope="col">Status</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="tbody">
                         <tr id="1" class="context">
                             <td class="index">1</td>
                             <!-- <td class="indexInput"><input type="text" name="abc" id="index" value="1"></td> -->
                             <td>A job</td>
                             <td>Needs to do something</td>
-                            <td>2</td>
-                            <td>2</td>
+                            <td class="size">2</td>
+                            <td class="cum">2</td>
                             <td>In Progress</td>
                         </tr>
                         <tr id="2" class="context">
@@ -83,8 +83,8 @@
                             <!-- <td class="indexInput"><input type="text" name="abc" id="index" value="2"></td> -->
                             <td>A job</td>
                             <td>Needs to do something</td>
-                            <td>2</td>
-                            <td>8</td>
+                            <td class="size">4</td>
+                            <td class="cum">8</td>
                             <td>To do</td>
                         </tr>
                         <tr id="3" class="context">
@@ -92,8 +92,8 @@
                             <!-- <td class="indexInput"><input type="text" name="abc" id="index" value="3"></td> -->
                             <td>A job</td>
                             <td>Needs to do something</td>
-                            <td>2</td>
-                            <td>3</td>
+                            <td class="size">6</td>
+                            <td class="cum">3</td>
                             <td>Done</td>
                         </tr>
 
@@ -159,7 +159,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" id="saveButton" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -169,55 +169,76 @@
 
 </body>
 <script>
-    var fixHelperModified = function (e, tr) {
-        var $originals = tr.children();
-        var $helper = tr.clone();
-        $helper.children().each(function (index) {
-            $(this).width($originals.eq(index).width())
+    $(document).ready(function(){
+            var fixHelperModified = function (e, tr) {
+            var $originals = tr.children();
+            var $helper = tr.clone();
+            $helper.children().each(function (index) {
+                $(this).width($originals.eq(index).width())
+            });
+            return $helper;
+            },
+            updateIndex = function (e, ui) {
+                $('.tbody').children().each(function(i){
+                    if(i!=0){
+                        console.log($('.tbody').children()[i].getElementsByTagName("td")[4].innerHTML)
+                        var temp = parseInt($('.tbody').children()[i].getElementsByTagName("td")[3].innerHTML)
+                        var temp2 = parseInt($('.tbody').children()[i-1].getElementsByTagName("td")[4].innerHTML)
+                        $('.tbody').children()[i].getElementsByTagName("td")[4].innerHTML = temp + temp2
+                    }else{
+                        $('.tbody').children()[i].getElementsByTagName("td")[4].innerHTML = $('.tbody').children()[i].getElementsByTagName("td")[3].innerHTML
+                    }
+                })
+                $('td.index', ui.item.parent()).each(function (i) {
+                    $(this).html(i + 1);
+                });
+                $('input[type=text]', ui.item.parent()).each(function (i) {
+                    $(this).val(i + 1);
+                });
+            };
+
+        $("#myTable tbody").sortable({
+            helper: fixHelperModified,
+            stop: updateIndex
+        }).disableSelection();
+
+
+        console.log($("#1").find("td:eq(4)").text())
+        $("tbody").sortable({
+            distance: 5,
+            delay: 100,
+            opacity: 0.6,
+            cursor: 'move',
+            update: function () { }
         });
-        return $helper;
-    },
-        updateIndex = function (e, ui) {
-            $('td.index', ui.item.parent()).each(function (i) {
-                $(this).html(i + 1);
-            });
-            $('input[type=text]', ui.item.parent()).each(function (i) {
-                $(this).val(i + 1);
-            });
-        };
+        $('.context').on('contextmenu', function (e) {
+            var top = e.pageY - 50;
+            var left = e.pageX - 120;
+            $("#context-menu").css({
+                display: "block",
+                top: top,
+                left: left
+            }).addClass("show");
+            return false; //blocks default Webbrowser right click menu
+        }).on("click", function () {
+            $("#context-menu").removeClass("show").hide();
+        });
+        $('#saveButton').on("click",function(){
+            console.log("model")
+        })
 
-    $("#myTable tbody").sortable({
-        helper: fixHelperModified,
-        stop: updateIndex
-    }).disableSelection();
 
-    $("tbody").sortable({
-        distance: 5,
-        delay: 100,
-        opacity: 0.6,
-        cursor: 'move',
-        update: function () { }
-    });
-    $('.context').on('contextmenu', function (e) {
-        var top = e.pageY - 50;
-        var left = e.pageX - 120;
-        $("#context-menu").css({
-            display: "block",
-            top: top,
-            left: left
-        }).addClass("show");
-        return false; //blocks default Webbrowser right click menu
-    }).on("click", function () {
-        $("#context-menu").removeClass("show").hide();
-    });
+        $("#context-menu a").on("click", function () {
+            $(this).parent().removeClass("show").hide();
+        });
+        $("html").on("click", function () {
+            console.log('in')
+            $("#context-menu").removeClass("show").hide();
+        });
 
-    $("#context-menu a").on("click", function () {
-        $(this).parent().removeClass("show").hide();
-    });
-    $("html").on("click", function () {
-        console.log('in')
-        $("#context-menu").removeClass("show").hide();
-    });
+        $("table").find("tbody tr").children()[10]
+
+    })
 </script>
 
 </html>
