@@ -31,7 +31,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'pages',
+    'project.apps.ProjectConfig',
+    'sprints.apps.SprintsConfig',
+    'product.apps.ProductConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
