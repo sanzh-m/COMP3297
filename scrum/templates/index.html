@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <!-- <script src="./index.js"></script> -->
+</head>
+<style>
+    td:hover {
+        cursor: move;
+    }
+</style>
+
+<body class="body">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Product Backlog</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Logo </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Sprint Backlog</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">View Done: Yes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Sprint Backlog History</a>
+                </li>
+            </ul>
+            <span class="navbar-text">
+                Username
+            </span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table table-hover" id="myTable">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">PBI</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Cumulative</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in productBacklogItems %}
+                            <tr id={{item.id}} class="context">
+                                <td class="index">{{item.id}} </td>
+                                <!-- <td class="indexInput"><input type="text" name="abc" id="index" value="1"></td> -->
+                                <td>{{item.title}}</td>
+                                <td>{{item.description}}</td>
+                                <td>{{item.size}}</td>
+                                <td>{{item.size}}</td>
+                                <td>{{item.status}}</td>
+                                <td>
+                                <button data-id={{item.id}} type="button" class="modify btn btn-dark" data-target="#modifyModal">Modify</button>
+                                <button data-id={{item.id}} type="button" class="delete btn btn-dark" data-target="#exampleModal">Delete</button>
+                                <button type="button" class="btn btn-dark" data-target="#exampleModal">Add to Sprint</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal">Add Product Backlog Item</button>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/productbg" id="addPBI" method="post">
+                        {% csrf_token %}
+                        {{form.as_p}}
+                            <input type="submit">
+                        </form> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="submit btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+    {% comment %} Update existing PBI  {% endcomment %}
+    <div class="modal fade" id="modifyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/modifypbi" id="modifyPBI" method="post">
+                        {% csrf_token %}
+                        </form> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="submit btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+
+</body>
+<script>
+
+$(document).ready(function(){
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+        function csrfSafeMethod(method) {
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $('.delete').click(function(event){
+        var id = $(this).data("id")
+        $.ajaxSetup({
+            url: "/deletepbi/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    console.log('in')
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                console.log(data)
+                if(data["success"] == "true"){
+                    window.location.href = '/productbg';
+                }
+            }
+        });
+        $.ajax({ data: {"id": id} });
+
+    })
+    $('.modify').click(function(event){
+        $('#modifyPBI').empty();
+        var id = $(this).data("id")
+        $('#modifyModal').modal('show');
+        console.log(id)
+        var title =$(`tr#${id}`).find('td').eq(1).html()
+        var description =$(`tr#${id}`).find('td').eq(2).html()
+        var size =$(`tr#${id}`).find('td').eq(3).html()
+        var status =$(`tr#${id}`).find('td').eq(5).html()
+        $('#modifyPBI').append(
+            `
+            <p>Title:
+            <input name=title value=${title}></input>
+            </p>
+            <p>Description:
+            <input name=description value=${description}></input>
+            </p>
+            <p>Size:
+            <input name=size value=${size}></input>
+            </p>
+            <p>Status:
+            <input name=status value=${status}></input>
+            </p>
+            <input type=hidden name=id value=${id}>
+            <button type="button" class="modifySubmit btn btn-primary">Modify</button>
+            `)
+        $('.modifySubmit').click(function(event){
+        event.preventDefault();
+        var formData = $('#modifyPBI').serialize()
+        $.ajaxSetup({
+            url: "/modifypbi/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                console.log('in')
+                if (!csrfSafeMethod(settings.type)) {
+                    console.log('in')
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                console.log(data)
+                if(data["success"] == "true"){
+                    window.location.href = '/productbg';
+                }
+            }
+        });
+        $.ajax({ data: formData });
+    })
+
+    })
+
+
+    
+})
+</script>
+
+</html>
