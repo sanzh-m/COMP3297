@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+    'chat',
     'project.apps.ProjectConfig',
     'sprints.apps.SprintsConfig',
     'product.apps.ProductConfig',
@@ -71,7 +73,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'scrum.wsgi.application'
-
+ASGI_APPLICATION = 'scrum.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
