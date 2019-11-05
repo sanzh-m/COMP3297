@@ -83,7 +83,7 @@
                                 <td>
                                 <button data-id={{item.id}} type="button" class="modify btn btn-dark" data-target="#modifyModal">Modify</button>
                                 <button data-id={{item.id}} type="button" class="delete btn btn-dark" data-target="#exampleModal">Delete</button>
-                                <button type="button" class="btn btn-dark" data-target="#exampleModal">Add to Sprint</button>
+                                <button data-id={{item.id}} type="button" class="addToSprint btn btn-dark">Add to Sprint</button>
                                 <button data-id={{item.id}} type="button" class="refine btn btn-dark" data-target="#refineModal">Refine</button>
                                 
                                 </td>
@@ -107,7 +107,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/productbg" id="addPBI" method="post">
+                        <form action="/product_backlog/" id="addPBI" method="post">
                         {% csrf_token %}
                         {{form.as_p}}
                             <input type="submit">
@@ -131,7 +131,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/modifypbi" id="modifyPBI" method="post">
+                        <form action="/product_backlog/modifypbi/" id="modifyPBI" method="post">
                         {% csrf_token %}
                         </form> 
                     </div>
@@ -174,10 +174,12 @@ $(document).ready(function(){
         function csrfSafeMethod(method) {
             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
-    $('.delete').click(function(event){
-        var id = $(this).data("id")
+    $('.addToSprint').click(function(event){
+        var pbi_id = $(this).data("id")
+        var pb_id = 1
+        // hardcoded for now.
         $.ajaxSetup({
-            url: "/deletepbi/",
+            url: "/product_backlog/addtosprint/",
             type: 'POST',
             beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type)) {
@@ -188,7 +190,30 @@ $(document).ready(function(){
             success: function(data){
                 console.log(data)
                 if(data["success"] == "true"){
-                    window.location.href = '/productbg';
+                    window.location.href = '/sprint_backlog/';
+                }
+            }
+        });
+        $.ajax({ data: {"pbi_id": pbi_id, "pb_id":pb_id}});
+
+
+    })
+
+    $('.delete').click(function(event){
+        var id = $(this).data("id")
+        $.ajaxSetup({
+            url: "/product_backlog/deletepbi/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    console.log('in')
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                console.log(data)
+                if(data["success"] == "true"){
+                    window.location.href = '/product_backlog';
                 }
             }
         });
@@ -254,7 +279,7 @@ $(document).ready(function(){
                     success: function(data){
                         console.log(data)
                         if(data["success"] == "true"){
-                            window.location.href = '/productbg';
+                            window.location.href = '/product_backlog';
                         }
                     }
                 });
@@ -291,7 +316,7 @@ $(document).ready(function(){
         event.preventDefault();
         var formData = $('#modifyPBI').serialize()
         $.ajaxSetup({
-            url: "/modifypbi/",
+            url: "/product_backlog/modifypbi/",
             type: 'POST',
             beforeSend: function(xhr, settings) {
                 console.log('in')
@@ -303,7 +328,7 @@ $(document).ready(function(){
             success: function(data){
                 console.log(data)
                 if(data["success"] == "true"){
-                    window.location.href = '/productbg';
+                    window.location.href = '/product_backlog';
                 }
             }
         });

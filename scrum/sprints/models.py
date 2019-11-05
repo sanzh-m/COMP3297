@@ -18,7 +18,7 @@ class Task(models.Model):
                       ('TI', 'Testing In Process'), ('TD', 'Testing Done'), ('DO', 'Done')]
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, null=True, default='NS')
     description = models.CharField(max_length=500)
-    PBI = models.ForeignKey('product.PBI', null=True, on_delete=models.CASCADE)
+    PBI = models.ForeignKey('product.ProductBacklogItem', null=True, on_delete=models.CASCADE)
     index = models.PositiveIntegerField()
     sprint = models.ForeignKey('SprintBacklog', null=True, on_delete=models.CASCADE)
 

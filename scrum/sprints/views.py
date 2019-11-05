@@ -14,14 +14,14 @@ class SprintBacklogView(TemplateView):
     def get_context_data(self, **kwargs):
         sprints = SprintBacklog.objects.filter(active=True)
         sprint = sprints[0]
-        PBIs = PBI.objects.filter(sprint=sprint)
+        PBIs = ProductBacklogItem.objects.filter(sprint_id=sprint)
         entry_list = []
         context = super().get_context_data(**kwargs)
 
         for pbi in PBIs:
             tuple = (pbi, True)
             entry_list.append(tuple)
-            tasks = Task.objects.filter(PBI=pbi, sprint=sprint)
+            tasks = Task.objects.filter(PBI=pbi, sprint_id=sprint)
             for task in tasks:
                 tuplee = (task, False)
                 entry_list.append(tuplee)

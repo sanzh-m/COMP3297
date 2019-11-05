@@ -33,7 +33,7 @@ class HomeView(TemplateView):
             pb = ProductBacklog.objects.all().filter(id=1)
             post.pb_id = pb[0]
             post.save()
-        response = redirect('/productbg')
+        response = redirect('/product_backlog')
         return response
         
 def modifyPBI(request):
@@ -63,5 +63,14 @@ def refinePBI(request):
     return JsonResponse({"success": "true"})
 
 
+def addToSprint(request):
+    # project backlog id
+    pb_id = request.POST.get('pb_id')
+    pbi_id = request.POST.get('pbi_id')
 
+    print("pbi_id",pb_id)
+    pb = ProductBacklog.objects.all().filter(id=pb_id)
+    sprints = SprintBacklog.objects.filter(project = pb[0].project, active = True)
+    ProductBacklogItem.objects.filter(id = pbi_id).update(sprint_id=sprints[0])
+    return JsonResponse({"success": "true"})
 
