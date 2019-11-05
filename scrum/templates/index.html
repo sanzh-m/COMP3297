@@ -84,6 +84,8 @@
                                 <button data-id={{item.id}} type="button" class="modify btn btn-dark" data-target="#modifyModal">Modify</button>
                                 <button data-id={{item.id}} type="button" class="delete btn btn-dark" data-target="#exampleModal">Delete</button>
                                 <button type="button" class="btn btn-dark" data-target="#exampleModal">Add to Sprint</button>
+                                <button data-id={{item.id}} type="button" class="refine btn btn-dark" data-target="#refineModal">Refine</button>
+                                
                                 </td>
                             </tr>
                         {% endfor %}
@@ -118,7 +120,6 @@
                 </div>
             </div>
     </div>
-    {% comment %} Update existing PBI  {% endcomment %}
     <div class="modal fade" id="modifyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -141,6 +142,28 @@
                 </div>
             </div>
     </div>
+    <div class="modal fade" id="refineModal" tabindex="-1" role="dialog"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="newPBIs" class="modal-body">
+            
+                        <button type="button" class="addPBI btn btn-secondary">Add PBI</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="submitRefinedPBIs btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+    
 
 
 </body>
@@ -171,6 +194,72 @@ $(document).ready(function(){
         });
         $.ajax({ data: {"id": id} });
 
+    })
+    $('.refine').click(function(event){
+        var id = $(this).data("id")
+        $('#refineModal').modal('show');
+        $('.addPBI').click(function(event){
+            $("#newPBIs").prepend(`
+            <form class="refinePBI">
+            <p>Title:
+            <input name=title></input>
+            </p>
+            <p>Description:
+            <input name=description></input>
+            </p>
+            <p>Size:
+            <input name=size></input>
+            </p>
+            <p>Status:
+            <input name=status></input>
+            </p>
+            </form>
+            </br>
+            `)
+        })
+        function deparam(query) {
+            var pairs, i, keyValuePair, key, value, map = {};
+            // remove leading question mark if its there
+            if (query.slice(0, 1) === '?') {
+                query = query.slice(1);
+            }
+            if (query !== '') {
+                pairs = query.split('&');
+                for (i = 0; i < pairs.length; i += 1) {
+                    keyValuePair = pairs[i].split('=');
+                    key = decodeURIComponent(keyValuePair[0]);
+                    value = (keyValuePair.length > 1) ? decodeURIComponent(keyValuePair[1]) : undefined;
+                    map[key] = value;
+                }
+            }
+            return map;
+        }
+        $('.submitRefinedPBIs').click(function(event){
+                var id_to_delete=id
+                pbi_list=[]
+                for(var i=0; i<$('.refinePBI').length; i++){
+                    pbi_list.push(deparam($('.refinePBI').eq(i).serialize()))
+
+                }
+                console.log(pbi_list)
+                $.ajaxSetup({
+                    url: "/refinepbi/",
+                    type: 'POST',
+                    beforeSend: function(xhr, settings) {
+                        if (!csrfSafeMethod(settings.type)) {
+                            console.log('in')
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                    },
+                    success: function(data){
+                        console.log(data)
+                        if(data["success"] == "true"){
+                            window.location.href = '/productbg';
+                        }
+                    }
+                });
+                $.ajax({ data: {"newpbis": pbi_list, "id": id_to_delete} });
+        })
     })
     $('.modify').click(function(event){
         $('#modifyPBI').empty();
