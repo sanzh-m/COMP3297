@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <!-- <script src="./index.js"></script> -->
+</head>
+<style>
+    td:hover {
+        cursor: move;
+    }
+</style>
+
+<body class="body">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Project Backlog</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Logo </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Product Backlog</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Sprint Backlog History</a>
+                </li>
+            </ul>
+            <span class="navbar-text">
+                Username
+            </span>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table table-hover table-bordered" id="myTable">
+                    <thead>
+                        <tr>
+                            <th scope="col" rowspan="2" class="text-center">Backlog</th>
+                            <th scope="col" rowspan="2">Tasks</th>
+                            <th scope="col" colspan="2">Development</th>
+                            <th scope="col" colspan="2">Testing</th>
+
+                            <th scope="col" rowspan="2">Done</th>
+                            <th scope="col" rowspan="2">Size</th>
+                            <th scope="col" rowspan="2">Burndown</th>
+                            <th scope="col" rowspan="2">Remaining</th>
+                            <th scope="col" rowspan="2">Actions</th>
+                        </tr>
+                        <tr>
+                            <th scope="col">In Process</th>
+                            <th scope="col">Done</th>
+                            <th scope="col">In Process</th>
+                            <th scope="col">Done</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody">
+                        {% for entry, PBI in entry_list %}
+                        {%  if PBI %}
+                        <tr class="context">
+                            <td><!-- PBI -->PBI{{ entry.pk }}</td>
+                            <!-- <td class="indexInput"><input type="text" name="abc" id="index" value="1"></td> -->
+                            <td><!-- Task --></td>
+                            <td><!-- Task DI--></td>
+                            <td><!-- Task DD--></td>
+                            <td><!-- Task TI--></td>
+                            <td><!-- Task TD--></td>
+                            <td><!-- Task Done--></td>
+                            <td><!-- Size -->{{ entry.size }}</td>
+                            <td><!-- Burndown -->{{ entry.burndown }}</td>
+                            <td><!-- Remaining -->{{ entry.remaining }}</td>
+                            <td><!-- Actions -->
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="submit" value="Add Task">
+                                    <input type="submit" value="Return To Backlog">
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr class="context">
+                            <td><!-- PBI -->PBI{{ entry.PBI }}</td>
+                            <!-- <td class="indexInput"><input type="text" name="abc" id="index" value="1"></td> -->
+                            <td><!-- Task -->
+                                {% if entry.status == "" %}
+                                    TASK{{ entry.pk }}
+                                {% endif %}</td>
+                            <td><!-- Task DI-->
+                                {% if entry.status == "DI" %}
+                                    TASK{{ entry.pk }}
+                                {% endif %}
+                            </td>
+                            <td><!-- Task DD-->
+                                {% if entry.status == "DD" %}
+                                    TASK{{ entry.pk }}
+                                {% endif %}
+                            </td>
+                            <td><!-- Task TI-->
+                                {% if entry.status == "TI" %}
+                                    TASK{{ entry.pk }}
+                                {% endif %}
+                            </td>
+                            <td><!-- Task TD-->
+                                {% if entry.status == "TD" %}
+                                    TASK{{ entry.pk }}
+                                {% endif %}
+                            </td>
+                            <td><!-- Task Done-->
+                                {% if entry.status == "D" %}
+                                    TASK{{ entry.pk }}
+                                {% endif %}
+                            </td>
+                            {% if entry.effort == NULL %}
+                                    <td><!-- Size --></td>
+                                    <td><!-- Burndown --></td>
+                                    <td><!-- Remaining --></td>
+                                    <td><!-- Actions -->
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <input type="submit" value="Estimate">
+                                            <input type="submit" value="Collapse">
+                                        </form>
+                                    </td>
+
+                            {% elif entry.status == "D" %}
+                                    <td><!-- Size -->{{ entry.effort }}</td>
+                                    <td><!-- Burndown -->{{ entry.effort }}</td>
+                                    <td><!-- Remaining -->0</td>
+                                    <td><!-- Actions -->
+                                    </td>
+                            {% elif entry.status == "" %}
+                                    <td><!-- Size -->{{ entry.effort }}</td>
+                                    <td><!-- Burndown -->0</td>
+                                    <td><!-- Remaining -->{{ entry.effort }}</td>
+                                    <td><!-- Actions -->
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <input type="submit" value="Take Ownership">
+                                            <input type="submit" value="Collapse">
+                                        </form>
+                                    </td>
+                            {% else %}
+                                    <td><!-- Size -->{{ entry.effort }}</td>
+                                    <td><!-- Burndown -->0</td>
+                                    <td><!-- Remaining -->{{ entry.effort }}</td>
+                                    <td><!-- Actions -->
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <input type="submit" value="Move Right">
+                                            <input type="submit" value="Move Left">
+                                            <input type="submit" value="Collapse">
+                                        </form>
+                                    </td>
+                            {% endif %}
+                        </tr>
+                        {% endif %}
+                        {% empty %}
+                        <tr>
+			                <th> No PBIs yet </th>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+</html>

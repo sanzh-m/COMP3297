@@ -20,4 +20,5 @@ from django.conf.urls import include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('product_backlog/', include('product.urls')),
+    path('sprint_backlog/', include('sprints.urls')),
 ]
