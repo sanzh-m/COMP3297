@@ -1,7 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7f99b995-47ae-45ee-9613-654289fd65b8" name="Default Changelist" comment="" />
+    <list default="true" id="7f99b995-47ae-45ee-9613-654289fd65b8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/product/migrations/0002_auto_20191107_1829.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/product/migrations/0003_auto_20191109_1107.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/migrations/0002_auto_20191107_1837.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/migrations/0003_auto_20191107_2338.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/migrations/0004_auto_20191108_0104.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprints/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprints/migrations/0002_auto_20191109_1156.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/jquery.bootstrap.modal.forms.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/jquery.bootstrap.modal.forms.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/registration/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/form.py" beforeDir="false" afterPath="$PROJECT_DIR$/product/form.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/product/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/migrations/0002_auto_20191105_1256.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/migrations/0003_auto_20191105_1322.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/product/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/product/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrum/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrum/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrum/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrum/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprints/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/sprints/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprints/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sprints/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprints/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/sprints/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprints/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/sprints/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pages/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pages/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sprint_backlog.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sprint_backlog.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sprints/sprint_backlog.html" beforeDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,9 +60,13 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectId" id="1T3Yc9uTe7vDVakIsvMLdezkoQo" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/sprints" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -37,7 +75,11 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\sanzh\OneDrive\Documents\GitHub\COMP3297\scrum\sprints" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\sanzh\OneDrive\Documents\GitHub\COMP3297\scrum\templates\registration" />
       <recent name="C:\Users\sanzh\OneDrive\Documents\GitHub\COMP3297\scrum\templates" />
     </key>
   </component>
@@ -92,6 +134,8 @@
       <workItem from="1572690326185" duration="8305000" />
       <workItem from="1572922240552" duration="56000" />
       <workItem from="1572922313875" duration="17303000" />
+      <workItem from="1572961981657" duration="4384000" />
+      <workItem from="1573115032599" duration="45207000" />
     </task>
     <servers />
   </component>
@@ -110,5 +154,8 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>

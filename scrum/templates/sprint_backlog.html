@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -19,6 +20,7 @@
         crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
         integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
     <!-- <script src="./index.js"></script> -->
 </head>
 <style>
@@ -29,7 +31,9 @@
 
 <body class="body">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Project Backlog</a>
+        <span class="navbar-text">
+                Sprint Backlog: {{ sprint.index }}
+        </span>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
             aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -37,17 +41,26 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Logo </a>
+                    <a class="nav-link" href="#" id='logo'>Logo </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Product Backlog</a>
+                    <a class="nav-link" href="/product_backlog/">Product Backlog</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Sprint Backlog History</a>
                 </li>
+                <li class="navbar-text">
+                    Available Effort
+                </li>
+                <li class="nav-item">
+                    <input type="number" min="0" id='effort' value={{ sprint.availableEffort }}><button type="button" class="submitEffort btn btn-dark">Submit</button>
+                </li>
+                <li class="navbar-text">
+                    Occupied Effort: {{ sprint.effort }}
+                </li>
             </ul>
             <span class="navbar-text">
-                Username
+                {{ user.get_username }}  <a href="{% url 'logout' %}">logout</a>
             </span>
         </div>
     </nav>
@@ -61,12 +74,14 @@
                             <th scope="col" rowspan="2">Tasks</th>
                             <th scope="col" colspan="2">Development</th>
                             <th scope="col" colspan="2">Testing</th>
-
                             <th scope="col" rowspan="2">Done</th>
-                            <th scope="col" rowspan="2">Size</th>
+                            <th scope="col" rowspan="2">Effort</th>
                             <th scope="col" rowspan="2">Burndown</th>
                             <th scope="col" rowspan="2">Remaining</th>
                             <th scope="col" rowspan="2">Actions</th>
+                            <th scope="col" rowspan="2">Title</th>
+                            <th scope="col" rowspan="2">Description</th>
+                            <th scope="col" rowspan="2">Owner</th>
                         </tr>
                         <tr>
                             <th scope="col">In Process</th>
@@ -78,8 +93,8 @@
                     <tbody class="tbody">
                         {% for entry, PBI in entry_list %}
                         {%  if PBI %}
-                        <tr class="context">
-                            <td><!-- PBI -->PBI{{ entry.pk }}</td>
+                        <tr id={{ entry.pk }} class="context">
+                            <td><!-- PBI -->{{ entry }}</td>
                             <!-- <td class="indexInput"><input type="text" name="abc" id="index" value="1"></td> -->
                             <td><!-- Task --></td>
                             <td><!-- Task DI--></td>
@@ -87,92 +102,116 @@
                             <td><!-- Task TI--></td>
                             <td><!-- Task TD--></td>
                             <td><!-- Task Done--></td>
-                            <td><!-- Size -->{{ entry.size }}</td>
+                            <td><!-- Size -->{{ entry.effort }}</td>
                             <td><!-- Burndown -->{{ entry.burndown }}</td>
                             <td><!-- Remaining -->{{ entry.remaining }}</td>
                             <td><!-- Actions -->
-                                <form method="POST">
-                                    {% csrf_token %}
-                                    <input type="submit" value="Add Task">
-                                    <input type="submit" value="Return To Backlog">
-                                </form>
+                            {% if active %}
+                            <button data-id={{ entry.pk }} type="button" class="add btn btn-dark" data-target="#TaskCreateModal">
+                                <span class="fa fa-plus"></span>
+                            </button>
+                            <button data-id={{ entry.pk }} type="button" class="return btn btn-dark">
+                                <span class="fa fa-reply"></span>
+                            </button>
+                            {% endif %}
+                            </td>
+                            <td> {{ entry.title }}
+                            </td>
+                            <td> {{ entry.description }}
+                            </td>
+                        <td>
                             </td>
                         </tr>
                         {% else %}
-                        <tr class="context">
-                            <td><!-- PBI -->PBI{{ entry.PBI }}</td>
+                        <tr id={{ entry.pk }} class="context">
+                            <td><!-- PBI -->{{ entry.PBI }}</td>
                             <!-- <td class="indexInput"><input type="text" name="abc" id="index" value="1"></td> -->
                             <td><!-- Task -->
-                                {% if entry.status == "" %}
-                                    TASK{{ entry.pk }}
+                                {% if entry.status == "NS" %}
+                                    {{ entry.title }}
                                 {% endif %}</td>
                             <td><!-- Task DI-->
                                 {% if entry.status == "DI" %}
-                                    TASK{{ entry.pk }}
+                                    {{ entry.title }}
                                 {% endif %}
                             </td>
                             <td><!-- Task DD-->
                                 {% if entry.status == "DD" %}
-                                    TASK{{ entry.pk }}
+                                    {{ entry.title }}
                                 {% endif %}
                             </td>
                             <td><!-- Task TI-->
                                 {% if entry.status == "TI" %}
-                                    TASK{{ entry.pk }}
+                                    {{ entry.title }}
                                 {% endif %}
                             </td>
                             <td><!-- Task TD-->
                                 {% if entry.status == "TD" %}
-                                    TASK{{ entry.pk }}
+                                    {{ entry.title }}
                                 {% endif %}
                             </td>
                             <td><!-- Task Done-->
-                                {% if entry.status == "D" %}
-                                    TASK{{ entry.pk }}
+                                {% if entry.status == "DO" %}
+                                    {{ entry.title }}
                                 {% endif %}
                             </td>
-                            {% if entry.effort == NULL %}
-                                    <td><!-- Size --></td>
-                                    <td><!-- Burndown --></td>
-                                    <td><!-- Remaining --></td>
-                                    <td><!-- Actions -->
-                                        <form method="POST">
-                                            {% csrf_token %}
-                                            <input type="submit" value="Estimate">
-                                            <input type="submit" value="Collapse">
-                                        </form>
-                                    </td>
-
-                            {% elif entry.status == "D" %}
+                            {% if entry.status == "DO" %}
                                     <td><!-- Size -->{{ entry.effort }}</td>
                                     <td><!-- Burndown -->{{ entry.effort }}</td>
                                     <td><!-- Remaining -->0</td>
                                     <td><!-- Actions -->
                                     </td>
-                            {% elif entry.status == "" %}
-                                    <td><!-- Size -->{{ entry.effort }}</td>
+                            {% elif entry.status == "NS" %}
+                                    <td>{{ entry.effort }}</td><!-- Size -->
                                     <td><!-- Burndown -->0</td>
                                     <td><!-- Remaining -->{{ entry.effort }}</td>
                                     <td><!-- Actions -->
-                                        <form method="POST">
-                                            {% csrf_token %}
-                                            <input type="submit" value="Take Ownership">
-                                            <input type="submit" value="Collapse">
-                                        </form>
+                                    {% if active %}
+                                        <button data-id={{entry.pk}} type="button" class="own btn btn-dark">
+                                            <span class="fa fa-child"></span>
+                                        </button>
+                                        <button data-id={{entry.pk}} type="button" class="change btn btn-dark" data-target="#TaskChangeModal">
+                                            <span class="fa fa-pencil"></span>
+                                        </button>
+                                        <button data-id={{entry.pk}} type="button" class="destroy btn btn-dark">
+                                            <span class="fa fa-trash"></span>
+                                        </button>
+                                    {% endif %}
                                     </td>
                             {% else %}
                                     <td><!-- Size -->{{ entry.effort }}</td>
                                     <td><!-- Burndown -->0</td>
                                     <td><!-- Remaining -->{{ entry.effort }}</td>
                                     <td><!-- Actions -->
-                                        <form method="POST">
-                                            {% csrf_token %}
-                                            <input type="submit" value="Move Right">
-                                            <input type="submit" value="Move Left">
-                                            <input type="submit" value="Collapse">
-                                        </form>
+                                    {% if active and developer == entry.owner%}
+                                        <button data-id={{entry.pk}} type="button" class="right btn btn-dark">
+                                            <span class="fa fa-arrow-right"></span>
+                                        </button>
+                                        {% if not entry.status == 'DI' %}
+                                            <button data-id={{entry.pk}} type="button" class="left btn btn-dark">
+                                                <span class="fa fa-arrow-left"></span>
+                                            </button>
+                                        {% else %}
+                                            <button data-id={{entry.pk}} type="button" class="left btn btn-dark" disabled>
+                                                <span class="fa fa-arrow-left"></span>
+                                            </button>
+                                        {% endif %}
+                                        <button data-id={{entry.pk}} type="button" class="change btn btn-dark" data-target="#TaskChangeModal">
+                                            <span class="fa fa-pencil"></span>
+                                        </button>
+                                        <button data-id={{entry.pk}} type="button" class="destroy btn btn-dark">
+                                            <span class="fa fa-trash"></span>
+                                        </button>
+                                    {% endif %}
                                     </td>
                             {% endif %}
+                            <td> {{ entry.title }}
+                            </td>
+                            <td> {{ entry.description }}
+                            </td>
+                            <td>
+                                {{ entry.owner }}
+                            </td>
                         </tr>
                         {% endif %}
                         {% empty %}
@@ -185,8 +224,275 @@
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="TaskCreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/sprint_backlog/addTask/" id="addTask" method="post">
+                        {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="modal fade" id="TaskChangeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/sprint_backlog/modifyTask/" id="modifyTask" method="post">
+                        {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+    </div>
 
 </body>
 
+<script type="text/javascript">
+
+$(document).ready(function(){
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+        function csrfSafeMethod(method) {
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $('.add').click(function(){
+        $('#addTask').empty();
+        var id = $(this).data("id")
+        $('#TaskCreateModal').modal('show');
+        $('#addTask').append(
+            `
+            <p>Title:
+            <input name=title></input>
+            </p>
+            <p>Description:
+            <input name=description></input>
+            </p>
+            <p>Effort:
+            <input name=effort></input>
+            </p>
+            <input type=hidden name=id value=${id}>
+            <button type="button" class="addSubmit btn btn-primary">Add</button>
+            `);
+        $('.addSubmit').click(function(event){
+        event.preventDefault();
+        var formData = $('#addTask').serialize();
+        $.ajaxSetup({
+            url: "/sprint_backlog/addTask/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                console.log('in');
+                if (!csrfSafeMethod(settings.type)) {
+                    console.log('in');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                console.log(data);
+                if(data["success"] === "true"){
+                    window.location.href = '/sprint_backlog';
+                }
+                else{
+                    alert('Task was not added as it exceeds the limit for capacity of this sprint');
+                }
+            }
+        });
+        $.ajax({ data: formData });
+    })})
+
+    $('.change').click(function(event){
+        $('#modifyTask').empty();
+        var id = $(this).data("id")
+        $('#TaskChangeModal').modal('show');
+        $('#modifyTask').append(
+            `
+            <p>Title:
+            <input name=title></input>
+            </p>
+            <p>Description:
+            <input name=description></input>
+            </p>
+            <p>Effort:
+            <input name=effort></input>
+            </p>
+            <input type=hidden name=id value=${id}>
+            <button type="button" class="modifySubmit btn btn-primary">Modify</button>
+            `);
+        $('.modifySubmit').click(function(event){
+        event.preventDefault();
+        var formData = $('#modifyTask').serialize();
+        $.ajaxSetup({
+            url: "/sprint_backlog/modifyTask/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                console.log('in');
+                if (!csrfSafeMethod(settings.type)) {
+                    console.log('in');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                console.log(data);
+                if(data["success"] === "true"){
+                    window.location.href = '/sprint_backlog';
+                }
+            }
+        });
+        $.ajax({ data: formData });
+    })
+
+    });
+
+    $('.own').click(function(event){
+        var pk = $(this).data("id");
+        $.ajaxSetup({
+            url: "/sprint_backlog/ownTask/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    console.log('in');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                console.log(data);
+                if(data["success"] === "true"){
+                    window.location.href = '/sprint_backlog';
+                }
+            }
+        });
+        $.ajax({ data: {'pk': pk} });
+
+    });
+
+    $('.destroy').click(function(event){
+        var pk = $(this).data("id");
+        $.ajaxSetup({
+            url: "/sprint_backlog/destroyTask/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    console.log('in');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                console.log(data);
+                if(data["success"] === "true"){
+                    window.location.href = '/sprint_backlog';
+                }
+            }
+        });
+        $.ajax({ data: {'pk': pk} });
+
+    });
+
+    $('.return').click(function(event){
+        var pk = $(this).data("id");
+        $.ajaxSetup({
+            url: "/sprint_backlog/returnToBacklog/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    console.log('in');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                console.log(data);
+                if(data["success"] === "true"){
+                    window.location.href = '/sprint_backlog';
+                }
+            }
+        });
+        $.ajax({ data: {'pk': pk} });
+
+    });
+
+    $('.right').click(function(event){
+        var pk = $(this).data("id");
+        $.ajaxSetup({
+            url: "/sprint_backlog/right/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    console.log('in');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                console.log(data);
+                if(data["success"] === "true"){
+                    window.location.href = '/sprint_backlog';
+                }
+            }
+        });
+        $.ajax({ data: {'pk': pk} });
+
+    });
+
+    $('.left').click(function(event){
+        var pk = $(this).data("id");
+        $.ajaxSetup({
+            url: "/sprint_backlog/left/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    console.log('in');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                console.log(data);
+                if(data["success"] === "true"){
+                    window.location.href = '/sprint_backlog';
+                }
+            }
+        });
+        $.ajax({ data: {'pk': pk} });
+
+    });
+
+    $('.submitEffort').click(function(event){
+        var effort = $('#effort').val();
+        $.ajaxSetup({
+            url: "/sprint_backlog/changeEffort/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    console.log('in');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                console.log(data);
+                if(data["success"] === "true"){
+                    window.location.href = '/sprint_backlog';
+                }
+            }
+        });
+        $.ajax({ data: {'effort': effort} });
+
+    });
+
+})
+
+</script>
 
 </html>
