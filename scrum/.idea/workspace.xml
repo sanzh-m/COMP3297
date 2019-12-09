@@ -2,55 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7f99b995-47ae-45ee-9613-654289fd65b8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/main/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/product/migrations/0002_auto_20191207_2140.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/product/migrations/0003_auto_20191208_2009.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/manager_view.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/project_creation.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/sprint_backlog_history.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat/consumers.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat/migrations/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/migrations/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat/routing.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat/templates/chat/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat/templates/chat/room.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat/views.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product/form.py" beforeDir="false" afterPath="$PROJECT_DIR$/product/form.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/product/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product/migrations/0002_auto_20191107_1829.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product/migrations/0003_auto_20191109_1107.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/product/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/product/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/product/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/migrations/0002_auto_20191107_1837.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/migrations/0003_auto_20191107_2338.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/migrations/0004_auto_20191108_0104.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scrum/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrum/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrum/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrum/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprints/forms.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprints/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/sprints/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprints/migrations/0002_auto_20191109_1156.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprints/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sprints/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprints/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/sprints/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprints/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/sprints/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/product_backlog.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/registration/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sprint_backlog.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sprint_backlog.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/jquery.bootstrap.modal.forms.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/jquery.bootstrap.modal.forms.min.js" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -172,7 +128,7 @@
       <workItem from="1575488844972" duration="16123000" />
       <workItem from="1575698027725" duration="31027000" />
       <workItem from="1575784730928" duration="795000" />
-      <workItem from="1575788345601" duration="43938000" />
+      <workItem from="1575788345601" duration="44736000" />
     </task>
     <servers />
   </component>
