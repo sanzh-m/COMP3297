@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <!-- <script src="./index.js"></script> -->
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="" id='logo'>Logo </a>
+                </li>
+            </ul>
+            <span class="navbar-text">
+                {{ user }}  <a href="{% url 'logout' %}">logout</a>
+            </span>
+        </div>
+    </nav>
+    <div class="container p-3 my-3 border" id="projectCreation">
+    <form action="/project/projectCreate/" id="createProject" method="post">
+        {% csrf_token %}
+    <p>Title:
+        <input name=title type="text" required></input>
+    </p>
+    <p>Deadline:
+        <input name=deadline type="date" value={% now 'Y-m-d' %} required></input>
+    </p>
+    <p>Manager:
+        <select name=manager required>
+            {% for manager in managers %}
+                <option value={{ manager.pk }}> {{ manager }}
+                </option>>
+            {% endfor %}
+        </select>
+    </p>
+    <div id="dev_team_selection">
+    <h3>
+        Development Team:
+    </h3>
+    <p id="Dev_1">Developer 1
+        <select name=dev1 class="dev_selection" id="dev_1">
+            <option value=""></option>
+            {% for developer in developers %}
+                <option value="{{ developer.pk }}"> {{ developer }}
+                </option>
+            {% endfor %}
+        </select>
+    </p>
+    <p id="Dev_2">Developer 2
+        <select name=dev2 class="dev_selection" id="dev_2">
+            <option value=""></option>
+            {% for developer in developers %}
+                <option value="{{ developer.pk }}"> {{ developer }}
+                </option>
+            {% endfor %}
+        </select>
+    </p>
+    <p id="Dev_3">Developer 3
+        <select name=dev3 class="dev_selection" id="dev_3">
+            <option value=""></option>
+            {% for developer in developers %}
+                <option value="{{ developer.pk }}"> {{ developer }}
+                </option>
+            {% endfor %}
+        </select>
+    </p>
+    </div>
+    </form>
+    <input type=hidden name=id value=${id}>
+    <button type="button" class="addDeveloper btn btn-dark">Add Developer</button>
+    <button type="button" class="removeDeveloper btn btn-dark">Remove Developer</button>
+    <button type="submit" class="createProject btn btn-dark">Create Project</button>
+    </div>
+</body>
+
+<script>
+    $('#dev_team_selection').ready(function(){
+    const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+    function csrfSafeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    let developerCount = 3;
+
+    $('.addDeveloper').click(function(){
+        if (developerCount < 9) {
+            developerCount++;
+            $('#dev_team_selection').append(
+                `<p id="Dev_` + developerCount.toString() + `">Developer `+ developerCount.toString() +
+                `\n <select name=` + developerCount.toString() + ` class="dev_selection" id="dev_` + developerCount.toString() + `">
+                <option value=""></option>
+                {% for developer in developers %}
+                <option value="{{ developer.pk }}"> {{ developer }}
+                </option>
+                {% endfor %}
+                </select>
+                </p>`
+            );
+        }
+        else{
+            alert('Maximum number of developers is 9');
+        }
+        });
+
+    $('.removeDeveloper').click(function(){
+       if (developerCount > 3) {
+           $('#Dev_' + developerCount.toString()).remove();
+           developerCount--;
+       }
+       else{
+           alert('Minimum number of developers is 3');
+       }
+    });
+
+    $(document).on('change', '.dev_selection', function () {
+        var valueChanged = this.value;
+        var idChanged = this.id;
+        if (valueChanged === ""){
+            alert('hello')
+        }
+        else{
+            $('.dev_selection').each(function () {
+                if (this.value === "" || idChanged === this.id){
+                    return;
+                }
+                else{
+                    if (valueChanged === this.value){
+                        $('#'+idChanged).val("");
+                    }
+                }
+            });
+        }
+    });
+
+    $('.createProject').click(function (event) {
+        event.preventDefault();
+        var formData = $('#createProject').serialize();
+        $.ajaxSetup({
+            url: "/project/project_create/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                if(data["success"] === "true"){
+                    window.location.href = '/product_backlog';
+                }
+                else{
+                    alert('Task was not added as it exceeds the limit for capacity of this sprint');
+                }
+            }
+        });
+        $.ajax({ data: formData });
+    });
+
+    })
+</script>
+</html>

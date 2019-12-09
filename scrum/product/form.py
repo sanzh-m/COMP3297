@@ -3,7 +3,7 @@ from .models import ProductBacklogItem
 
 
 # for later manipulation
-class HomeForm(forms.ModelForm):
+class PBIForm(forms.ModelForm):
     title = forms.CharField()
     description = forms.CharField()
     size = forms.IntegerField()

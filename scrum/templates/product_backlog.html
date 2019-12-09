@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <!-- <script src="./index.js"></script> -->
+</head>
+<style>
+    td:hover {
+        cursor: move;
+    }
+</style>
+
+<body class="body">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Product Backlog</a>
+
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Logo </a>
+                </li>
+                {% if existActiveSprint %}
+                    {% if isManager %}
+                        <li class="nav-item mr-1">
+                            <a class="nav-link" href="/sprint_backlog/{{ project.pk }}">Sprint Backlog</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item mr-1">
+                            <a class="nav-link" href="/sprint_backlog/">Sprint Backlog</a>
+                        </li>
+                    {% endif %}
+                {% elif isDeveloper %}
+                <li class="nav-item mr-1">
+                    <button type="button" class="createSprint btn btn-dark">Create Sprint</button>
+                </li>
+                {% endif %}
+                <li class="nav-item mr-1">
+                    <button type="button" class="viewDone btn btn-dark" value="No">View Done: No</button>
+                </li>
+                <li class="nav-item mr-1">
+                    <a class="nav-link" href="/sprint_backlog/history/{{ project.pk }}">Sprint Backlog History</a>
+                </li>
+            </ul>
+            <span class="navbar-text">
+                {{ user.get_username }}  <a href="{% url 'logout' %}">logout</a>
+            </span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <form action="/product_backlog/change_priority/" id="changePriority" method="post">
+                    {% csrf_token %}
+                    <table class="table table-hover" id="myTable">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center">PBI</th>
+                                <th scope="col">Title</th>
+                                <th style="width: 40%" scope="col">Description</th>
+                                <th scope="col">Size</th>
+                                <th scope="col">Cumulative</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in unchangeableProductBacklogItems %}
+                                <tr id={{ item.pk }} class="tableRow">
+                                    <td style="display: none">{{ item.pk }}</td>
+                                    <td class="index">{{ item.priority }} </td>
+                                    <!-- <td class="indexInput"><input type="text" name="abc" id="index" value="1"></td> -->
+                                    <td>{{ item.title }}</td>
+                                    <td style="width: 40%">{{ item.description }}</td>
+                                    <td class="size">{{ item.size }}</td>
+                                    <td class="cumulative"></td>
+                                    <td>{{ item.get_status_display }}</td>
+                                    <td></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tbody class="changeableBody">
+                            {% for item in changeableProductBacklogItems %}
+                                <tr id={{ item.pk }} class="tableRow">
+                                    <td style="display: none">{{item.pk}}</td>
+                                    <td class="index">{{item.priority}} </td>
+                                    <!-- <td class="indexInput"><input type="text" name="abc" id="index" value="1"></td> -->
+                                    <td>{{item.title}}</td>
+                                    <td style="width: 40%">{{item.description}}</td>
+                                    <td class="size">{{item.size}}</td>
+                                    <td class="cumulative"></td>
+                                    <td>{{item.get_status_display}}</td>
+                                    <td>
+                                    {% if isProductOwner %}
+                                    <button data-id={{ item.pk }} type="button" class="modify btn btn-dark" data-target="#modifyModal">
+                                        <span class="fa fa-pencil"></span>
+                                    </button>
+                                    <button data-id={{ item.pk }} type="button" class="delete btn btn-dark" data-target="#exampleModal">
+                                        <span class="fa fa-trash"></span>
+                                    </button>
+                                    <button data-id={{ item.pk }} type="button" class="refine btn btn-dark" data-target="#refineModal">
+                                        <span class="fa fa-stack-exchange"></span>
+                                    </button>
+                                        {% if item.status == "UF" %}
+                                            <button data-id={{ item.pk }} type="button" class="makeToDo btn btn-dark" data-target="#refineModal">
+                                                Clear
+                                            </button>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if existActiveSprint and isDeveloper %}
+                                    <button data-id={{ item.pk }} type="button" class="addToSprint btn btn-dark">Add to Sprint</button>
+                                    {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tbody style="display: none" class="doneBody">
+                            {% for item in doneProductBacklogItems %}
+                                <tr id={{ item.pk }} class="tableRow">
+                                    <td style="display: none">{{ item.pk }}</td>
+                                    <td></td>
+                                    <!-- <td class="indexInput"><input type="text" name="abc" id="index" value="1"></td> -->
+                                    <td>{{ item.title }}</td>
+                                    <td style="width: 40%">{{item.description}}</td>
+                                    <td class="size">{{item.size}}</td>
+                                    <td class="cumulative"></td>
+                                    <td>{{ item.get_status_display }}</td>
+                                    <td></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            {% if isProductOwner %}
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal">Add Product Backlog Item</button>
+            {% endif %}
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/product_backlog/" id="addPBI" method="post">
+                        {% csrf_token %}
+                        {{form.as_p}}
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="submit btn btn-primary" form="addPBI">Save changes</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="modal fade" id="modifyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/product_backlog/modify_pbi/" id="modifyPBI" method="post">
+                        {% csrf_token %}
+                        </form> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="modifySubmit btn btn-primary" form="modifyPBI">Save changes</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="modal fade" id="refineModal" tabindex="-1" role="dialog"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="newPBIs" class="modal-body">
+                        <form action="/product_backlog/refine_pbi/" id="refinePBI" method="post">
+                        {% csrf_token %}
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="addPBI btn btn-secondary">Add PBI</button>
+                        <button type="button" class="submitRefinedPBIs btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+    
+
+
+</body>
+<script>
+
+$(document).ready(function(){
+    const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    let numberOfNewPBIs = 0;
+    let curCum = 0;
+
+    function csrfSafeMethod(method) {
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    function setCum(){
+        $('.tableRow').each(function () {
+            curCum += parseInt($(this).find('td.size').text());
+            $(this).find('td.cumulative').text(curCum);
+        });
+        curCum = 0;
+    }
+    window.onload = setCum();
+    {% if isProductOwner %}
+    $('.changeableBody').sortable({
+        //helper: fixHelperModified,
+        //stop: updateIndex,
+        distance: 5,
+        delay: 100,
+        opacity: 0.6,
+        cursor: 'move',
+        update: function () {
+            let formData = $('#changePriority').serialize();
+
+            $(".changeableBody tr").each(function(index) {
+                // Within tr we find the last td child element and get content
+                const pk = this.id;
+                formData += '&' + pk + '=' + encodeURIComponent(index.toString());
+            });
+
+            $.ajaxSetup({
+                url: "/product_backlog/change_priority/",
+                type: 'POST',
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type)) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+                success: function(data){
+                    if(data["success"] === "true"){
+                        window.location.href = '/product_backlog';
+                    }
+                }
+            });
+            $.ajax({ data: formData});
+
+            setCum();
+         }
+    }).disableSelection();
+
+    {% endif %}
+
+    $('.addToSprint').click(function(event){
+        const pk = $(this).data("id");
+        $.ajaxSetup({
+            url: "/product_backlog/add_to_sprint/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                if(data["success"] === "true"){
+                    window.location.href = '/sprint_backlog/';
+                }
+            }
+        });
+        $.ajax({ data: {"pk": pk}});
+    });
+
+    $('.createSprint').click(function(event){
+        $.ajaxSetup({
+            url: "/product_backlog/create_sprint/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    console.log('in');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                console.log(data);
+                if(data["success"] === "true"){
+                    window.location.href = '/sprint_backlog/';
+                }
+            }
+        });
+        $.ajax({ data: {}});
+
+
+    });
+
+    $('.delete').click(function(event){
+        const pk = $(this).data("id");
+        $.ajaxSetup({
+            url: "/product_backlog/delete_pbi/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                if(data["success"] === "true"){
+                    window.location.href = '/product_backlog';
+                }
+            }
+        });
+        $.ajax({ data: {"pk": pk} });
+
+    });
+    $('.addPBI').click(function(event){
+            $("#refinePBI").append(`
+            <p>Title:
+            <input name=title` + numberOfNewPBIs.toString() + `></input>
+            </p>
+            <p>Description:
+            <input name=description` + numberOfNewPBIs.toString() + `></input>
+            </p>
+            <p>Size:
+            <input name=size` + numberOfNewPBIs.toString() + `></input>
+            </p>
+            </br>
+            `);
+            numberOfNewPBIs++;
+        });
+
+    $('.refine').click(function(event){
+        const pk = $(this).data("id");
+        numberOfNewPBIs = 0;
+        $('#refinePBI').empty();
+        $('#refinePBI').append(`<input type=hidden name=id value='${pk}'>`);
+        $('#refineModal').modal('show');
+
+        $('.submitRefinedPBIs').click(function(event){
+            const formData = $('#refinePBI').serialize();
+
+            $.ajaxSetup({
+                url: "/product_backlog/refine_pbi/",
+                type: 'POST',
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type)) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+                success: function(data){
+                    if(data["success"] === "true"){
+                        window.location.href = '/product_backlog';
+                    }
+                    else{
+                        alert('Some fields are left empty!');
+                    }
+                }
+            });
+            $.ajax({ data: formData});
+        })
+    });
+    $('.modify').click(function(event){
+        $('#modifyPBI').empty();
+        var pk = $(this).data("id");
+        $('#modifyModal').modal('show');
+        var row = $(`tr#${pk}`);
+        var title = row.find('td').eq(1).html();
+        var description = row.find('td').eq(2).html();
+        var size = row.find('td').eq(3).html();
+        var status = row.find('td').eq(5).html();
+        $('#modifyPBI').append(
+            `
+            <p>Title:
+            <input name=title value='${title}'></input>
+            </p>
+            <p>Description:
+            <input type="text "name=description value='${description}'></input>
+            </p>
+            <p>Size:
+            <input name=size value='${size}'></input>
+            </p>
+            <p>Status:
+            <input name=status value='${status}'></input>
+            </p>
+            <input type=hidden name=id value='${pk}'>
+            `);
+        $('.modifySubmit').click(function(event){
+        event.preventDefault();
+        var formData = $('#modifyPBI').serialize();
+        $.ajaxSetup({
+            url: "/product_backlog/modify_pbi/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                if(data["success"] === "true"){
+                    window.location.href = '/product_backlog';
+                }
+            }
+        });
+        $.ajax({ data: formData });
+        })
+    });
+    $('.viewDone').click(function () {
+        var $this = $(this);
+        $this.toggleClass('viewDone');
+        if($this.hasClass('viewDone')){
+            $this.text('View Done: No');
+            $('.doneBody').hide();
+        } else {
+            $this.text('View Done: Yes');
+            $('.doneBody').show();
+        }
+    });
+    $('.makeToDo').click(function () {
+        const pk = $(this).data("id");
+        $.ajaxSetup({
+            url: "/product_backlog/clear_pbi/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                if(data["success"] === "true"){
+                    window.location.href = '/product_backlog';
+                }
+            }
+        });
+        $.ajax({ data: {"pk": pk} });
+    })
+})
+</script>
+
+</html>

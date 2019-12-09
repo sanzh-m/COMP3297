@@ -15,9 +15,10 @@ class ProductBacklogItem(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='TD')
     sprint_id = models.ForeignKey('sprints.SprintBacklog', null=True, blank=True, on_delete=models.SET_NULL)
     pb_id = models.ForeignKey('ProductBacklog', null=True, on_delete=models.CASCADE)
+    priority = models.PositiveIntegerField(null=True)
 
     def __str__(self):
-        return 'PBI ' + self.title
+        return 'PBI ' + self.title + ' ' + self.pk.__str__()
 
     def task_count(self):
         tasks = Task.objects.filter(PBI=self)
@@ -47,5 +48,10 @@ class ProductBacklogItem(models.Model):
             if task.effort != 0 and task.status != 'DO':
                 remaining += task.effort
         return remaining
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['priority', 'pb_id'], name='unique_priority'),
+        ]
 
 # Create your models here.

@@ -28,15 +28,14 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'project.User'
-LOGIN_REDIRECT_URL = '/product_backlog/'
+LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login'
 
 # Application definition
 
 INSTALLED_APPS = [
-    'channels',
-    'chat',
     'project.apps.ProjectConfig',
+    'main.apps.MainConfig',
     'sprints.apps.SprintsConfig',
     'product.apps.ProductConfig',
     'django.contrib.admin',

@@ -3,8 +3,8 @@ from django.db import models
 
 class SprintBacklog(models.Model):
     active = models.BooleanField(default=False)
-    startDate = models.DateField()
-    endDate = models.DateField()
+    startDate = models.DateField(null=True)
+    endDate = models.DateField(null=True)
     availableEffort = models.DecimalField(max_digits=3, decimal_places=0)
     project = models.ForeignKey('project.Project', null=True, on_delete=models.CASCADE)
     index = models.PositiveIntegerField()

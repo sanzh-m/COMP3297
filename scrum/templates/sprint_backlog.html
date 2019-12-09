@@ -20,14 +20,8 @@
         crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
         integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
-    <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
     <!-- <script src="./index.js"></script> -->
 </head>
-<style>
-    td:hover {
-        cursor: move;
-    }
-</style>
 
 <body class="body">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -39,28 +33,51 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <ul class="navbar-nav mr-auto">
+            <ul class="navbar-nav mr-1">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#" id='logo'>Logo </a>
+                    <a class="nav-link" href="" id='logo'>Logo </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/product_backlog/">Product Backlog</a>
+                {% if isManager %}
+                    <li class="nav-item mr-1">
+                        <a class="nav-link" href="/product_backlog/{{ project.pk }}">Product Backlog</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item mr-1">
+                        <a class="nav-link" href="/product_backlog/">Product Backlog</a>
+                    </li>
+                {% endif %}
+                <li class="nav-item mr-1">
+                    <a class="nav-link" href="/sprint_backlog/history/{{ project.pk }}">Sprint Backlog History</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Sprint Backlog History</a>
+                {% if sprint.startDate is None  and active %}
+                <li class="navbar-text mr-1">
+                    Available Effort:
                 </li>
-                <li class="navbar-text">
-                    Available Effort
-                </li>
-                <li class="nav-item">
+                <li class="nav-item mr-1">
                     <input type="number" min="0" id='effort' value={{ sprint.availableEffort }}><button type="button" class="submitEffort btn btn-dark">Submit</button>
                 </li>
-                <li class="navbar-text">
+                <li class="navbar-text mr-1">
                     Occupied Effort: {{ sprint.effort }}
                 </li>
+                <li class="nav-item mr-1">
+                    <button type="button" class="startSprint btn btn-dark">Start Sprint</button>
+                </li>
+                {% else %}
+                <li class="navbar-text mr-1">
+                    Available Effort: {{ sprint.availableEffort }}
+                </li>
+                <li class="navbar-text mr-1">
+                    Occupied Effort: {{ sprint.effort }}
+                </li>
+                {% endif %}
+                {% if sprint.startDate is not None and sprint.endDate is None and active%}
+                <li class="nav-item mr-1">
+                    <button type="button" class="finishSprint btn btn-dark">Finish Sprint</button>
+                </li>
+                {% endif %}
             </ul>
             <span class="navbar-text">
-                {{ user.get_username }}  <a href="{% url 'logout' %}">logout</a>
+                {{ user }}  <a href="{% url 'logout' %}">logout</a>
             </span>
         </div>
     </nav>
@@ -178,6 +195,23 @@
                                         </button>
                                     {% endif %}
                                     </td>
+                             {% elif entry.owner is None and entry.status != 'NS'%}
+                                <td>{{ entry.effort }}</td><!-- Size -->
+                                    <td><!-- Burndown -->0</td>
+                                    <td><!-- Remaining -->{{ entry.effort }}</td>
+                                    <td><!-- Actions -->
+                                    {% if active %}
+                                        <button data-id={{entry.pk}} type="button" class="own btn btn-dark">
+                                            <span class="fa fa-child"></span>
+                                        </button>
+                                        <button data-id={{entry.pk}} type="button" class="change btn btn-dark" data-target="#TaskChangeModal">
+                                            <span class="fa fa-pencil"></span>
+                                        </button>
+                                        <button data-id={{entry.pk}} type="button" class="destroy btn btn-dark">
+                                            <span class="fa fa-trash"></span>
+                                        </button>
+                                    {% endif %}
+                                 </td>
                             {% else %}
                                     <td><!-- Size -->{{ entry.effort }}</td>
                                     <td><!-- Burndown -->0</td>
@@ -202,6 +236,9 @@
                                         <button data-id={{entry.pk}} type="button" class="destroy btn btn-dark">
                                             <span class="fa fa-trash"></span>
                                         </button>
+                                        <button data-id={{entry.pk}} type="button" class="giveUp btn btn-dark">
+                                            <span class="fa fa-flag-o"></span>
+                                        </button>
                                     {% endif %}
                                     </td>
                             {% endif %}
@@ -216,7 +253,7 @@
                         {% endif %}
                         {% empty %}
                         <tr>
-			                <th> No PBIs yet </th>
+			                <th colspan=14 class="text-center"> No PBIs yet </th>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -230,13 +267,13 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Add Task</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/sprint_backlog/addTask/" id="addTask" method="post">
+                        <form action="/sprint_backlog/add_task/" id="addTask" method="post">
                         {% csrf_token %}
                         </form>
                     </div>
@@ -254,7 +291,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/sprint_backlog/modifyTask/" id="modifyTask" method="post">
+                        <form action="/sprint_backlog/modify_task/" id="modifyTask" method="post">
                         {% csrf_token %}
                         </form>
                     </div>
@@ -294,7 +331,7 @@ $(document).ready(function(){
         event.preventDefault();
         var formData = $('#addTask').serialize();
         $.ajaxSetup({
-            url: "/sprint_backlog/addTask/",
+            url: "/sprint_backlog/add_task/",
             type: 'POST',
             beforeSend: function(xhr, settings) {
                 console.log('in');
@@ -338,7 +375,7 @@ $(document).ready(function(){
         event.preventDefault();
         var formData = $('#modifyTask').serialize();
         $.ajaxSetup({
-            url: "/sprint_backlog/modifyTask/",
+            url: "/sprint_backlog/modify_task/",
             type: 'POST',
             beforeSend: function(xhr, settings) {
                 console.log('in');
@@ -362,7 +399,7 @@ $(document).ready(function(){
     $('.own').click(function(event){
         var pk = $(this).data("id");
         $.ajaxSetup({
-            url: "/sprint_backlog/ownTask/",
+            url: "/sprint_backlog/own_task/",
             type: 'POST',
             beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type)) {
@@ -384,7 +421,7 @@ $(document).ready(function(){
     $('.destroy').click(function(event){
         var pk = $(this).data("id");
         $.ajaxSetup({
-            url: "/sprint_backlog/destroyTask/",
+            url: "/sprint_backlog/destroy_task/",
             type: 'POST',
             beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type)) {
@@ -406,7 +443,7 @@ $(document).ready(function(){
     $('.return').click(function(event){
         var pk = $(this).data("id");
         $.ajaxSetup({
-            url: "/sprint_backlog/returnToBacklog/",
+            url: "/sprint_backlog/return_to_backlog/",
             type: 'POST',
             beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type)) {
@@ -469,10 +506,30 @@ $(document).ready(function(){
 
     });
 
+    $('.giveUp').click(function(event){
+        var pk = $(this).data("id");
+        $.ajaxSetup({
+            url: "/sprint_backlog/release_task/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                if(data["success"] === "true"){
+                    window.location.href = '/sprint_backlog';
+                }
+            }
+        });
+        $.ajax({ data: {'pk': pk} });
+
+    });
+
     $('.submitEffort').click(function(event){
         var effort = $('#effort').val();
         $.ajaxSetup({
-            url: "/sprint_backlog/changeEffort/",
+            url: "/sprint_backlog/change_effort/",
             type: 'POST',
             beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type)) {
@@ -490,6 +547,46 @@ $(document).ready(function(){
         $.ajax({ data: {'effort': effort} });
 
     });
+
+    $('.startSprint').click(function (event) {
+        $.ajaxSetup({
+            url: "/sprint_backlog/start_sprint/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    console.log('in');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                console.log(data);
+                if(data["success"] === "true"){
+                    window.location.href = '/sprint_backlog';
+                }
+            }
+        });
+        $.ajax({ data: {} });
+    })
+
+    $('.finishSprint').click(function (event) {
+        $.ajaxSetup({
+            url: "/sprint_backlog/finish_sprint/",
+            type: 'POST',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    console.log('in');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function(data){
+                console.log(data);
+                if(data["success"] === "true"){
+                    window.location.href = '/product_backlog';
+                }
+            }
+        });
+        $.ajax({ data: {} });
+    })
 
 })
 
