@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7f99b995-47ae-45ee-9613-654289fd65b8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scrum/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrum/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/jquery.bootstrap.modal.forms.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/jquery.bootstrap.modal.forms.min.js" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -128,7 +124,7 @@
       <workItem from="1575488844972" duration="16123000" />
       <workItem from="1575698027725" duration="31027000" />
       <workItem from="1575784730928" duration="795000" />
-      <workItem from="1575788345601" duration="44736000" />
+      <workItem from="1575788345601" duration="45163000" />
     </task>
     <servers />
   </component>
